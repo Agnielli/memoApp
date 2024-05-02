@@ -6,7 +6,7 @@ import {
   Text,
   View,
   Image,
-  TouchableHighlight,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 import Voice, {
@@ -120,7 +120,7 @@ class Record extends Component<Props, State> {
     });
 
     try {
-      await Voice.start("en-US");
+      await Voice.start("es-ES");
 
       this.props.onSpeechStart();
     } catch (e) {
@@ -165,13 +165,13 @@ class Record extends Component<Props, State> {
     return (
       <View style={styles.container}>
         {this.state.started ? (
-          <TouchableHighlight onPress={this._stopRecognizing}>
+          <TouchableWithoutFeedback onPress={this._stopRecognizing}>
             <View
               style={{
                 width: 75,
                 height: 75,
                 borderRadius: 75,
-                backgroundColor: "#6E01EF",
+                backgroundColor: "#FA5C46",
                 alignItems: "center",
                 justifyContent: "center",
               }}
@@ -193,29 +193,29 @@ class Record extends Component<Props, State> {
                     key={index}
                     style={[
                       StyleSheet.absoluteFillObject,
-                      { backgroundColor: "#6E01EF", borderRadius: 75 },
+                      { backgroundColor: "#FA5C46", borderRadius: 75 },
                     ]}
                   />
                 );
               })}
               <FontAwesome name="microphone-slash" size={24} color="#fff" />
             </View>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
         ) : (
-          <TouchableHighlight onLongPress={this._startRecognizing}>
+          <TouchableWithoutFeedback onLongPress={this._startRecognizing}>
             <View
               style={{
-                width: 75,
-                height: 75,
-                borderRadius: 75,
-                backgroundColor: "#6E01EF",
+                width: 80,
+                height: 80,
+                borderRadius: 80,
+                backgroundColor: "#FA5C46",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <FontAwesome name="microphone" size={24} color="#fff" />
+              <FontAwesome name="microphone" size={26} color="#fff" />
             </View>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
         )}
       </View>
     );

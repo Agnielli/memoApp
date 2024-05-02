@@ -1,49 +1,47 @@
 import { StatusBar } from "expo-status-bar";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { View, SafeAreaView, StyleSheet, Text, Dimensions } from "react-native";
+import { NativeRouter, Route, Routes } from 'react-router-native'; 
 import { QueryClient, QueryClientProvider } from "react-query";
 import "react-native-reanimated";
-
-import Home from "./components/Home";
-import Notes from "./components/Notes/list";
-
-const Tab = createBottomTabNavigator();
+import NestedListComponent from "./components/NestedListComponents";
+import AppBar from './components/AppBar'
+import LogInPage from "./pages/Login";
+import ItemDetail from "./components/ItemDetail";
+import NewCategory from "./components/NewCategory";
+import NewText from "./components/NewText";
+import UpdateText from "./components/UpdateText";
 
 const queryClient = new QueryClient();
+const screenHeight = Dimensions.get('window').height;
+const containerHeight = 0.85 * screenHeight;
 
 export default function App() {
   return (
-    <NavigationContainer>
       <QueryClientProvider client={queryClient}>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: () => {
-              let iconName = "record";
-
-              if (route.name === "Record") {
-                iconName = "record-vinyl";
-              } else if (route.name === "History") {
-                iconName = "history";
-              }
-              return <FontAwesome5 name={iconName} size={24} color="black" />;
-            },
-          })}
-        >
-          <Tab.Screen name="Record" component={Home} />
-          <Tab.Screen name="History" component={Notes} />
-        </Tab.Navigator>
+        <NativeRouter>
+        <SafeAreaView style={styles.container}>
+          <Routes>
+            <Route path="/" element={<NestedListComponent />} />
+            <Route path="/signin" element={<LogInPage />} />
+            <Route path="/itemDetail/:categoryId/:itemId" element={<ItemDetail />} />
+            <Route path="/newCategory" element={<NewCategory />} />
+            <Route path="/:categoryId/newItem" element={<NewText />} />
+            <Route path="/:itemId/update" element={<UpdateText />} />
+          </Routes> 
+          <View style={styles.appBar}>
+            <Text><AppBar /></Text>
+          </View>
+          </SafeAreaView>
+        </NativeRouter>
       </QueryClientProvider>
-    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#FFFBDA',
   },
-});
+  appBar: {
+    alignItems: 'center',   
+  },
+})

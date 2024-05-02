@@ -11,14 +11,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": ["@react-native-voice/voice"],
+    "plugins": [
+      "@react-native-voice/voice"
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.SpeectToTextApp",
+      "bundleIdentifier": "com.anonymous.SpeechtToTextApp",
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your speech to text.",
         "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
@@ -29,11 +33,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"],
-      "package": "com.anonymous.SpeectToTextApp"
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.anonymous.SpeechtToTextApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b5081c24-74f2-41e8-874e-d92408f97b1a"
+      }
     }
   }
 }
