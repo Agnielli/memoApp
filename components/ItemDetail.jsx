@@ -5,7 +5,7 @@ import { useQueryClient } from "react-query";
 import { useParams, useNavigate } from "react-router-native";
 import axios from 'axios';
 import StyledText from './StyledText';
-import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import useCreateNote from "../hooks/useCreateNote";
 import Record from "./Record";
 import ModalDeleteText from './ModalDeleteText';
@@ -75,34 +75,44 @@ const ItemDetail = () => {
       .catch((err)=>{})
   };
 
-  const test = (matchingItem?.text.trim() === speechText.trim()) && proved;
+  
   // Función para encontrar un homófono correspondiente a una palabra
-  const findHomophoneForWord = (word) => {
+  const findHomophoneGroupForWord = (word) => {
     for (const group of homophoneGroups) {
-      const matchingHomophone = group.find(homophone => homophone === word);
-      if (matchingHomophone) {
-        return matchingHomophone;
+      if (group.includes(word)) {
+        return group;
       }
     }
     return null;
   };
-  // Función para comparar una palabra con sus homófonos
-const compareWordWithHomophones = (word) => {
-  const homophoneMatch = findHomophoneForWord(word);
-  return homophoneMatch ? homophoneMatch : word;
-};
+  
+  const onSpeechPartialResults = (partialResults) => {
+    
+    const words = partialResults.split(' ');
+  
+    const originalWords = matchingItem.text.split(' ');
+  
+    // Comparar cada palabra con el texto original
+    const correctedWords = words.map((word, index) => {
+      const homophoneGroup = findHomophoneGroupForWord(word);
+      if (homophoneGroup && homophoneGroup.includes(originalWords[index])) {
+        // Si la palabra es un homófono y la palabra correspondiente en el texto original está en el mismo grupo de homófonos,
+        // reemplazar la palabra por la palabra original
+        return originalWords[index];
+      } else {
+        return word;
+      }
+    });
+  
+    // Unir las palabras corregidas para formar el texto corregido
+    const correctedText = correctedWords.join(' ');
+  
+    // Actualizar el estado con el texto corregido
+    setSpeechText(correctedText);
+  }
+  
+  const test = (matchingItem?.text.trim() === speechText.trim()) && proved;
 
-// Evento que se ejecuta al recibir resultados parciales del reconocimiento de voz
-const onSpeechPartialResults = (partialResults) => {
-  // Dividir el texto en palabras
-  const words = partialResults.split(' ');
-  
-  // Comparar cada palabra con sus homófonos
-  const correctedWords = words.map(compareWordWithHomophones);
-  
-  // Unir las palabras corregidas para formar el texto corregido
-  const correctedText = correctedWords.join(' ');
-}
 
   useEffect(() => {
     if (proved) {
@@ -136,7 +146,7 @@ const onSpeechPartialResults = (partialResults) => {
                 multiline
                 numberOfLines={6}
                 value={speechText}
-                maxLength={700}
+                maxLength={1000}
                 
               />
             ) : (
@@ -167,18 +177,21 @@ const onSpeechPartialResults = (partialResults) => {
                   setTestValidated(false)
                   setBorderColor('black')
                 }}
-                // onSpeechEnd={(value) => {
-                //   setSpeechText(value[0]);
-                //   setProved(true);
-                //   setIsPressed(true);
-                //   setIsPressing(false);
-                // }}
-                onSpeechPartialResults={(value) => {
+                onSpeechEnd={(value) => {
                   setSpeechText(value[0]);
                   setProved(true);
                   setIsPressed(true);
                   setIsPressing(false);
                 }}
+
+                // onSpeechPartialResults={(value) => {
+                //   setSpeechText(value[0]);
+                //   setProved(true);
+                //   setIsPressed(true);
+                //   setIsPressing(false);
+                // }}
+                onSpeechPartialResults={onSpeechPartialResults}
+                setSpeechText={setSpeechText}
               />
             </View>
 
@@ -194,7 +207,12 @@ const onSpeechPartialResults = (partialResults) => {
               </View>
             </TouchableOpacity>
                          
-              <TouchableOpacity style={styles.button} onPress={()=> navigate(`/${itemId}/update`)}>
+              <TouchableOpacity 
+                style={styles.button} 
+                // onPress={()=> navigate(`/${itemId}/update`)}
+                // onPress={handleEdit}
+                >
+
                 <AntDesign name="edit" size={24} color="black" />
               </TouchableOpacity>
 

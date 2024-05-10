@@ -19,6 +19,8 @@ import { Easing } from "react-native-reanimated";
 type Props = {
   onSpeechStart: () => void;
   onSpeechEnd: (result: any[]) => void;
+  onSpeechPartialResults: (result: any[]) => void;
+  setSpeechText: (value: string) => void;
 };
 type State = {
   recognized: string;
@@ -99,6 +101,7 @@ class Record extends Component<Props, State> {
     this.setState({
       partialResults: e.value!,
     });
+    this.props.setSpeechText(e.value![0]);
   };
 
   onSpeechVolumeChanged = (e: any) => {
