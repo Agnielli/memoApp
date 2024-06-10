@@ -45,8 +45,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: width * (13/100),
-    flex: 1
+    paddingHorizontal: width * (17/100),
   },
   text: {
     color: theme.appBar.textSecondary,

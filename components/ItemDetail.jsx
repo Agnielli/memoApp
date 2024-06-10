@@ -10,6 +10,8 @@ import useCreateNote from "../hooks/useCreateNote";
 import Record from "./Record";
 import ModalDeleteText from './ModalDeleteText';
 import homophoneGroups from '../homofoneOrShame';
+import UpdateOneItem from './UpdateText';
+import UpdateTitle from './UpdateTitle';
 
 const screenHeight = Dimensions.get('window').height;
 const containerHeight = 0.85 * screenHeight;
@@ -25,6 +27,7 @@ const ItemDetail = () => {
   const [testValidated, setTestValidated] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
+  const [editing, setEditing] = useState(false);
   const { isSuccess } = useCreateNote();
   const { categoryId, itemId } = useParams();
   const queryClient = useQueryClient();
@@ -55,7 +58,7 @@ const ItemDetail = () => {
       }
     };  
     fetchData();
-  }, [categoryId, itemId]);
+  }, [categoryId, itemId, editing]);
   console.log("matchingItem en ItemDetail: ", matchingItem);
 
   useEffect(() => {
@@ -130,7 +133,13 @@ const ItemDetail = () => {
       {matchingCategory && matchingItem && (
         <> 
           <StyledText style={styles.marginBottom}>
-            {matchingItem.name}
+            {editing ? (
+                  // Edit mode is true, display the Formik form
+                  <UpdateTitle style={styles.marginBottom} editing={editing} setEditing={setEditing} />
+                ) : (
+                  // Edit mode is false, display the matching item text
+                  <StyledText style={styles.marginBottom}>{matchingItem.name}</StyledText>
+                )}
           </StyledText>
           <TouchableOpacity 
                
@@ -151,7 +160,13 @@ const ItemDetail = () => {
               />
             ) : (
               <View>
+                {editing ? (
+                // Edit mode is true, display the Formik form
+                <UpdateOneItem editing={editing} setEditing={setEditing} />
+              ) : (
+                // Edit mode is false, display the matching item text
                 <StyledText>{matchingItem.text}</StyledText>
+              )}
               </View>
             )}
           </TouchableOpacity>
@@ -210,7 +225,7 @@ const ItemDetail = () => {
               <TouchableOpacity 
                 style={styles.button} 
                 // onPress={()=> navigate(`/${itemId}/update`)}
-                // onPress={handleEdit}
+                onPress={() => setEditing(true)}
                 >
 
                 <AntDesign name="edit" size={24} color="black" />

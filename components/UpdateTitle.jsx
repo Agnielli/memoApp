@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Formik, useField } from "formik";
-import { StyleSheet, View, Button, Text } from "react-native";
+import { StyleSheet, View, Button, Text, TextInput } from "react-native";
 import { useNavigate, useParams } from 'react-router-native';
-import StyledTextInput from "../components/StyledTextInput";
-import StyledText from "../components/StyledText";
+import StyledTextInput from "./StyledTextInput";
+import StyledText from "./StyledText";
 import {itemValidationSchema} from "../validationSchemas/item";
 import axios from "axios";
+import { Accept } from "../images/accept";
 
 const initialValues = {
   itemTitle: '',
-  itemText: '',
 }
 
 const FormikInputValue = ({ name, ...props }) => {
@@ -18,7 +18,7 @@ const FormikInputValue = ({ name, ...props }) => {
 
   return (
     <>
-      <StyledTextInput 
+      <TextInput 
         error={meta.error}
         value={field.value}
         onChangeText={value => helpers.setValue(value)}
@@ -29,13 +29,10 @@ const FormikInputValue = ({ name, ...props }) => {
   )
 }
 
-export default function UpdateOneItem ({ editing, setEditing }) {
+export default function UpdateTitle ({ editing, setEditing }) {
   const { itemId } = useParams();
-  console.log("itemId: ", itemId);
   const [updateItem, setUpdateItem] = useState([]);
   const [validateOnChange, setValidateOnChange] = useState(false);
-  const lineHeight = 20;
-  const totalHeight = lineHeight * 6
 
   const navigate = useNavigate()
 
@@ -63,7 +60,6 @@ export default function UpdateOneItem ({ editing, setEditing }) {
           validationSchema={itemValidationSchema}
           initialValues={{
             itemTitle: updateItem.name || '',
-            itemText: updateItem.text || '',
           }}
           onSubmit={values => {
             console.log(values);
@@ -74,7 +70,6 @@ export default function UpdateOneItem ({ editing, setEditing }) {
           {({ handleSubmit, setFieldValue }) => {
             useEffect(() => {
               setFieldValue('itemTitle', updateItem.name);
-              setFieldValue('itemText', updateItem.text);
             }, [updateItem]);
             
             return (
@@ -84,15 +79,10 @@ export default function UpdateOneItem ({ editing, setEditing }) {
                   name='itemTitle'
                   
                 />
-                <FormikInputValue 
-                  placeholder='Text'
-                  name='itemText'
-                  multiline
-                  style={{ height: totalHeight }}
-                  
-                />
-                <Text style={{ textAlign: 'center' }}>You can change the title or the text</Text>
-                <Button onPress={()=>{handleSubmit(); setValidateOnChange(true)}} title='Add' />
+
+                <View onPress={()=>{handleSubmit(); setValidateOnChange(true)}} style={styles.imgAccept}>
+                  <Accept />
+                </View>
               </View>
             )
           }}
@@ -108,5 +98,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 10,
     marginTop: -5,
-  }
+  },
+  imgAccept: {
+    marginBottom: -4,
+    marginStart: 5,
+    width: 24, 
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 })
